@@ -1,23 +1,39 @@
-import logo from './logo.svg';
 import './App.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Layout from './components/Layout';
+import TodoPage from './pages/TodoPage';
+import AuthPage from './pages/AuthPage';
+import { Provider } from 'react-redux';
+import store from './store/store';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 function App() {
+
+  const appRouter = createBrowserRouter([
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          path: '/',
+          element: <TodoPage />
+        },
+        {
+          path: '/auth',
+          element: <AuthPage />
+        }
+      ]
+    }
+  ])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="">
+      <Provider store={store}>
+        <DndProvider backend={HTML5Backend}>
+        <RouterProvider router={appRouter} />
+        </DndProvider>
+      </Provider>
     </div>
   );
 }
