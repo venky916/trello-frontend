@@ -45,7 +45,3 @@ export const SignUP =async (user)=>{
     }
 
 }
-
-// export const LogOUT = ()=>{
-
-// }

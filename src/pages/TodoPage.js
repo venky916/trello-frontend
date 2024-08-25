@@ -11,13 +11,12 @@ const TodoPage = () => {
   const TYPES = ['To-Do', 'In Progress', 'Under Review', 'Completed']
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector(store =>store.user)
-
+  const user = useSelector(store => store.user)
   const tasks = useSelector(store => store.tasks.tasks);
   const modal = useSelector(store => store.tasks.modalOpen)
-  
+
   const getTasks = async () => {
-    const tasks = await fetchTasks();;
+    const tasks = await fetchTasks();
     dispatch(addTasks(tasks))
   }
 
@@ -26,20 +25,42 @@ const TodoPage = () => {
       navigate('/auth')
     }
     !tasks.length && getTasks()
-  }, [tasks])
+  }, [tasks, navigate, user.user, dispatch])
 
   return (
     <>
-      <h1 className='text-center'>Todo's</h1>
-      <div className='flex'>
+      {/* Header */ }
+      <div className='relative'>
+        <h1 className='absolute left-1/2 transform -translate-x-1/2 top-4 text-xl font-bold text-black font-spaceGrotesk'>Todo's</h1>
+        <div className='absolute right-4 top-4 flex items-center space-x-2'>
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            className='border border-gray-300 p-2 rounded'
+          />
+          <button className='bg-orange text-white px-4 py-2 rounded hover:bg-light-orange transition duration-300'>
+            Search
+          </button>
+        </div>
+      </div>
+
+      {/* Columns */ }
+      <div className='flex space-x-4 p-4 pt-16'>
         {
-          TYPES.map((status, index) => {
-            return <Column key={index} status={status} tasks={tasks.filter((task) => task.status === status)} />
-          })
+          TYPES.map((status, index) => (
+            <Column
+              key={ index }
+              status={ status }
+              tasks={ tasks.filter((task) => task.status === status) }
+              className='flex-1 bg-l-white p-4 rounded-lg shadow-md'
+            />
+          ))
         }
       </div>
+
+      {/* Task Modal */ }
       {
-        modal && <TaskModal />
+        modal && <TaskModal className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center' />
       }
     </>
   )

@@ -1,6 +1,13 @@
 import { BASE_URL } from "../utils/constants"
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Yjg4MDk4YWYxYzg4MDI1NGVkZjIxZCIsImlhdCI6MTcyMzM4ODIwMSwiZXhwIjoxNzI1OTgwMjAxfQ.Ev7DZQd0_TZqb6aOH9_2JPJ043haF2mMU0xdksoEZ6w";
+const user = JSON.parse(localStorage.getItem("user"));
+let token;
+if (user && user.token) {
+    token = user.token;
+}
+
+
+// token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Yjg4MDk4YWYxYzg4MDI1NGVkZjIxZCIsImlhdCI6MTcyMzM4ODIwMSwiZXhwIjoxNzI1OTgwMjAxfQ.Ev7DZQd0_TZqb6aOH9_2JPJ043haF2mMU0xdksoEZ6w";
 
 export const fetchTasks = async () => {
     const response = await fetch(`${BASE_URL}/api/tasks`,

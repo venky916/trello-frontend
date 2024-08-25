@@ -14,7 +14,6 @@ const useLocalstorage = (key)=>{
     const [getLocalStorageValue,setLocalStorageValue] = useState(getInitialValue)
 
     useEffect(()=>{
-
         const handleStorageChange = ()=>{
             const localStorageValue = localStorage.getItem(key)
             setLocalStorageValue(JSON.parse(localStorageValue))
@@ -34,10 +33,11 @@ const useLocalstorage = (key)=>{
 
     const clearLocalStorage = ()=>{
         localStorage.removeItem(key);
-        setLocalStorageValue(null)
+        console.log(key)
+        setLocalStorageValue(null);
     }
 
-    return [getLocalStorageValue , setLocalStorage , clearLocalStorage]
+    return [getLocalStorageValue, setLocalStorage, clearLocalStorage]
 
 }
 
