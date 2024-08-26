@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Column from '../components/Column'
 import { fetchTasks } from '../services/taskService'
 import { useDispatch, useSelector } from 'react-redux'
 import { addTasks } from '../store/slices/taskSlice'
 import TaskModal from '../components/TaskModal'
 import { useNavigate } from 'react-router-dom'
+import Fuse from 'fuse.js' // Import Fuse.js
 
 const TodoPage = () => {
 
@@ -12,21 +13,44 @@ const TodoPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(store => store.user)
-  const tasks = useSelector(store => store.tasks.tasks);
+  const allTasks = useSelector(store => store.tasks.tasks);
   const modal = useSelector(store => store.tasks.modalOpen)
+  const [search, setSearch] = useState('')
+  const [tasks, setTasks] = useState(allTasks)
+
+  const handleFilter = () => {
+    if (search !== "") {
+      const fuse = new Fuse(allTasks, {
+        keys: ['title', 'description'], // Keys to search in
+        threshold: 0.3, // Adjust the threshold for more or less fuzzy results
+      });
+      const results = fuse.search(search);
+      setTasks(results.map(result => result.item));
+    } else {
+      setTasks(allTasks);
+    }
+  }
+
+  const sortTasksByDeadline = () => {
+    const sortedTasks = [...tasks].sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+    setTasks(sortedTasks)
+  };
 
   const getTasks = async () => {
     const tasks = await fetchTasks();
     dispatch(addTasks(tasks))
+    setTasks(tasks)
   }
 
   useEffect(() => {
     if (!user.user) {
-      navigate('/auth')
+      navigate('/auth');
     }
-    !tasks.length && getTasks()
-  }, [tasks, navigate, user.user, dispatch])
-
+    if (!allTasks.length) {
+      getTasks();
+    }
+    setTasks(allTasks)
+  }, [allTasks, navigate, user.user, dispatch]);
   return (
     <>
       {/* Header */ }
@@ -37,10 +61,13 @@ const TodoPage = () => {
             type="text"
             placeholder="Search tasks..."
             className='border border-gray-300 p-2 rounded'
+            value={ search }
+            onChange={ e => setSearch(e.target.value) }
           />
-          <button className='bg-orange text-white px-4 py-2 rounded hover:bg-light-orange transition duration-300'>
+          <button className='bg-orange text-white px-4 py-2 rounded hover:bg-light-orange transition duration-300' onClick={ handleFilter }>
             Search
           </button>
+          <button className='bg-light-orange text-b-black px-4 py-2 rounded-lg hover:bg-orange transition duration-300' onClick={ sortTasksByDeadline }>Sort by deadline</button>
         </div>
       </div>
 
@@ -51,7 +78,7 @@ const TodoPage = () => {
             <Column
               key={ index }
               status={ status }
-              tasks={ tasks.filter((task) => task.status === status) }
+              colTasks={ tasks.filter((task) => task.status === status) }
               className='flex-1 bg-l-white p-4 rounded-lg shadow-md'
             />
           ))

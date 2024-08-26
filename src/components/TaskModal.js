@@ -18,6 +18,7 @@ const TaskModal = () => {
     const [status, setStatus] = useState('To-Do')
     const [priority, setPriority] = useState('Low')
     const [deadline, setDeadline] = useState(formatDateForInput(new Date()))
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (modalMode === 'edit' && currentTask) {
@@ -26,6 +27,8 @@ const TaskModal = () => {
             setPriority(currentTask.priority);
             setStatus(currentTask.status);
             setDeadline(formatDateForInput(currentTask.deadline));
+        } else {
+            setStatus(currentTask.status);
         }
     }, [])
 
@@ -35,13 +38,12 @@ const TaskModal = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         if (modalMode === "edit") {
             const response = await updateTask(currentTask._id, {
                 ...currentTask,
                 title, description, priority, status, deadline
             })
-            console.log(response)
-
             dispatch(updatedTask({ id: currentTask._id, data: response }))
 
         } else {
@@ -50,7 +52,7 @@ const TaskModal = () => {
             })
             dispatch(createAddTask(response))
         }
-
+        setLoading(false);
         handleClose();
     }
 
@@ -163,13 +165,21 @@ const TaskModal = () => {
                         onChange={ e => setDeadline(e.target.value) }
                         className='p-2 border border-b-black rounded mb-4'
                     />
-
                     <button
                         type='submit'
-                        className='bg-orange text-white py-2 rounded hover:bg-light-orange transition duration-300'
+                        className={ `bg-orange text-white py-2 rounded ${!loading && "hover:bg-light-orange transition duration-300"}` }
+                        disabled={ loading }
                     >
-                        { modalMode === "edit" ? "Update" : "Create" }
+                        { loading ? (
+                            <span className="flex items-center justify-center">
+                                <div className='animate-spin rounded-full h-5 w-5 border-4 border-slate-400 border-t-white'></div>
+                                Processing...
+                            </span>
+                        ) : (
+                            modalMode === "edit" ? "Update" : "Create"
+                        ) }
                     </button>
+
                 </form>
             </div>
         </div>
