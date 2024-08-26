@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Task from './Task';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal, updatedTask } from "../store/slices/taskSlice";
 import { updateTask } from '../services/taskService';
 import { useDrop } from 'react-dnd';
@@ -11,6 +11,7 @@ const Column = ({ status, colTasks }) => {
 
   const dispatch = useDispatch();
   const [tasks, setTasks] = useState(colTasks)
+  const storeTasks = useSelector(store => store.tasks.tasks);
 
   const [{ isOver }, drop] = useDrop({
     accept: "TASK",
@@ -51,7 +52,7 @@ const Column = ({ status, colTasks }) => {
             <h5 className='text-md text-t-white bg-b-black px-2 rounded'>{ tasks.length }</h5>
           </div>
           <div className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-orange scrollbar-track-l-white'>
-            { tasks.length === 0 ? <Shimmer /> :tasks.map((task, index) => (
+        { tasks.length === 0 && storeTasks.length === 0 ? <Shimmer /> :tasks.map((task, index) => (
               <Task
                 task={ task }
                 index={ index }
