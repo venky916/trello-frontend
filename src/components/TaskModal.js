@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addTask, updateTask } from '../services/taskService';
 import { closeModal, createAddTask, updatedTask } from '../store/slices/taskSlice';
+import Toast from './Toast';
 
 const formatDateForInput = (date) => {
     const d = new Date(date);
@@ -19,6 +20,8 @@ const TaskModal = () => {
     const [priority, setPriority] = useState('Low')
     const [deadline, setDeadline] = useState(formatDateForInput(new Date()))
     const [loading, setLoading] = useState(false);
+    const [toastMessage, setToastMessage] = useState(null);
+
 
     useEffect(() => {
         if (modalMode === 'edit' && currentTask) {
@@ -31,36 +34,55 @@ const TaskModal = () => {
             setStatus(currentTask.status);
         }
     }, [])
+    
+    useEffect(() => {
+        if (toastMessage) {
+            const timer = setTimeout(() => {
+                setToastMessage(null);
+            }, 3000); // Clear the toast after 3 seconds
+
+            return () => clearTimeout(timer);
+        }
+    }, [toastMessage]);
+
 
     const handleStatusChange = (e) => {
         setStatus(e.target.value)
     }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        if (modalMode === "edit") {
-            const response = await updateTask(currentTask._id, {
-                ...currentTask,
-                title, description, priority, status, deadline
-            })
-            dispatch(updatedTask({ id: currentTask._id, data: response }))
-
-        } else {
-            const response = await addTask({
-                title, description, priority, status, deadline
-            })
-            dispatch(createAddTask(response))
+        try {
+            if (modalMode === "edit") {
+                const response = await updateTask(currentTask._id, {
+                    ...currentTask,
+                    title, description, priority, status, deadline
+                });
+                dispatch(updatedTask({ id: currentTask._id, data: response }));
+                setToastMessage("Task Updated Successfully");
+            } else {
+                const response = await addTask({
+                    title, description, priority, status, deadline
+                });
+                dispatch(createAddTask(response));
+                setToastMessage("Task Added Successfully");
+            }
+            setLoading(false);
+            handleClose();
+        } catch (error) {
+            setLoading(false);
+            setToastMessage("Something went wrong. Please try again.");
         }
-        setLoading(false);
-        handleClose();
-    }
+    };
+
 
     const handleClose = () => {
         dispatch(closeModal())
     }
 
     return (
+    <>
+        { toastMessage && <Toast message={ toastMessage } type="success" />}
         <div className='fixed top-0 bottom-0 right-0 left-0 bg-black/50 flex justify-center items-center'>
             <div className='bg-white w-[50%] flex flex-col justify-start m-4 p-8 rounded-lg shadow-lg'>
                 <div className='flex justify-between items-center mb-4'>
@@ -182,7 +204,8 @@ const TaskModal = () => {
 
                 </form>
             </div>
-        </div>
+            </div>
+        </>
     )
 }
 

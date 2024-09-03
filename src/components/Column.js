@@ -44,14 +44,14 @@ const Column = ({ status, colTasks }) => {
   return (
     <div
       ref={ drop }
-      className={ `border border-orange rounded-lg w-[24%] m-2 p-4 min-h-[84vh] flex flex-col transition-all duration-200 ${isOver ? "bg-orange/20 border-orange" : "bg-white"
+      className={ `border border-orange rounded-lg sm:w-[10%] md:w-[23%] m-2 p-4 min-h-[84vh] flex flex-col transition-all duration-200 ${isOver ? "bg-orange/20 border-orange" : "bg-white"
         }` }
     >
       <div className='flex justify-between items-center mb-4'>
         <h1 className='text-lg font-bold text-black'>{ status }</h1>
         <h5 className='text-md text-t-white bg-b-black px-2 rounded'>{ tasks.length }</h5>
       </div>
-      <div className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-orange scrollbar-track-l-white'>
+      <div className='flex-1 overflow-y-auto  scrollbar-thin scrollbar-thumb-orange scrollbar-track-l-white'>
         { tasks.length === 0 && storeTasks.length === 0 ? <Shimmer /> : tasks.map((task, index) => (
           <Task
             task={ task }

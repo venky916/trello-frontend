@@ -5,7 +5,8 @@ import { useDrag } from 'react-dnd';
 import { formatDate } from '../utils/constants';
 import { deleteTask } from '../services/taskService';
 import { deletedTask } from '../store/slices/taskSlice';
-import Shimmer from './Shimmer';
+
+
 const Task = ({ task, index }) => {
   const { title, description, priority, deadline } = task;
   const dispatch = useDispatch();
@@ -36,13 +37,13 @@ const Task = ({ task, index }) => {
   return (
     <div
       ref={ drag }
-      className={ `bg-b-black text-l-white m-2 p-4 border rounded-lg flex flex-col justify-start transition-transform duration-200 ${isDragging ? 'transform scale-95' : ''}` }
+      className={ `bg-b-black text-l-white m-2 p-4  border rounded-lg flex flex-col justify-start transition-transform duration-200 ${isDragging ? 'transform scale-95' : ''}` }
     >
       <h1 className='text-white font-bold text-xl mb-2'>Title: { title }</h1>
       { description && (
-        <div className='overflow-hidden'>
+        <div className='overflow-hidden '>
           <p
-            className={ `mb-2 ${isExpanded ? '' : 'line-clamp-2'} whitespace-normal cursor-pointer break-words` }
+            className={ `mb-2 ${isExpanded ? '' : 'line-clamp-2'} whitespace-normal cursor-pointer break-words  text-wrap` }
             onClick={ () => setIsExpanded(!isExpanded) }
           >
             Description: { description }

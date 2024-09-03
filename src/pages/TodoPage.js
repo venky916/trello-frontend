@@ -72,7 +72,7 @@ const TodoPage = () => {
       </div>
 
       {/* Columns */ }
-      <div className='flex space-x-4 p-4 pt-16'>
+      <div className='flex flex-wrap ml-10 pt-16'>
         {
           TYPES.map((status, index) => (
             <Column
