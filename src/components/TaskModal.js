@@ -12,7 +12,7 @@ const formatDateForInput = (date) => {
 const TaskModal = () => {
 
     const dispatch = useDispatch();
-    const { modalMode, modalOpen, currentTask } = useSelector(store => store.tasks)
+    const { modalMode, currentTask } = useSelector(store => store.tasks)
 
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -33,7 +33,7 @@ const TaskModal = () => {
         } else {
             setStatus(currentTask.status);
         }
-    }, [])
+    }, [modalMode,currentTask])
     
     useEffect(() => {
         if (toastMessage) {

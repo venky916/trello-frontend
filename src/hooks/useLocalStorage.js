@@ -24,7 +24,7 @@ const useLocalstorage = (key)=>{
             window.removeEventListener("storage",handleStorageChange)
         }
 
-    },[])
+    },[key])
 
     const setLocalStorage = (value)=>{
         localStorage.setItem(key,JSON.stringify(value))

@@ -59,62 +59,90 @@ const AuthPage = () => {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen bg-b-black text-white font-manrope p-4'>
-      <form onSubmit={ handleSubmit } className='bg-black p-6 rounded-lg shadow-md w-full max-w-md space-y-4'>
-        {
-          !isLogin && (
-            <div className='flex flex-col'>
-              <label htmlFor="username" className='text-t-white'>Name</label>
-              <input
-                type="text"
-                id="username"
-                value={ name }
-                onChange={ e => setName(e.target.value) }
-                className='p-2 bg-b-black border border-t-white rounded text-white'
-              />
-            </div>
-          )
-        }
-        <div className='flex flex-col'>
-          <label htmlFor="email" className='text-t-white'>Email</label>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-b-black text-white font-manrope p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-black p-6 rounded-lg shadow-md w-full max-w-md space-y-4"
+      >
+        {!isLogin && (
+          <div className="flex flex-col">
+            <label htmlFor="username" className="text-t-white">
+              Name
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="p-2 bg-b-black border border-t-white rounded text-white"
+            />
+          </div>
+        )}
+        <div className="flex flex-col">
+          <label htmlFor="email" className="text-t-white">
+            Email
+          </label>
           <input
             type="text"
-            id='email'
-            onChange={ e => setEmail(e.target.value) }
-            value={ email }
-            className='p-2 bg-b-black border border-t-white rounded text-white'
+            id="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            className="p-2 bg-b-black border border-t-white rounded text-white"
           />
         </div>
-        <div className='flex flex-col'>
-          <label htmlFor="password" className='text-t-white'>Password</label>
+        <div className="flex flex-col">
+          <label htmlFor="password" className="text-t-white">
+            Password
+          </label>
           <input
             type="password"
-            id='password'
-            onChange={ e => setPassword(e.target.value) }
-            value={ password }
-            className='p-2 bg-b-black border border-t-white rounded text-white'
+            id="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            className="p-2 bg-b-black border border-t-white rounded text-white"
           />
         </div>
-        { error && <p className='text-red-500'>{ error }</p> } {/* Display error if exists */ }
+        {error && <p className="text-red-500">{error}</p>}{' '}
+        {/* Display error if exists */}
+        {isLogin && (
+          <button
+            type="button"
+            onClick={() => {
+              setEmail('venkatesh@gmail.com');
+              setPassword('123456');
+            }}
+            className="w-full p-2 bg-orange text-white rounded hover:bg-light-orange hover:text-black transition duration-300"
+          >
+            Sign in with guest credentials
+          </button>
+        )}
         <button
           type="submit"
-          className='w-full p-2 bg-orange rounded hover:bg-light-orange transition duration-300'
-          disabled={ loading || !email || !password || (!isLogin && !name) }> {/* Disabled if loading or inputs are empty */ }
-          { loading ? (
+          className="w-full p-2 bg-orange rounded hover:bg-light-orange hover:text-black transition duration-300"
+          disabled={loading || !email || !password || (!isLogin && !name)}
+        >
+          {' '}
+          {/* Disabled if loading or inputs are empty */}
+          {loading ? (
             <span className="flex items-center justify-center">
-              <div className='animate-spin rounded-full h-5 w-5 border-4 border-slate-400 border-t-white m-2'></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-4 border-slate-400 border-t-white m-2"></div>
               loading...
             </span>
-          ) : (<span>{ isLogin ? "Login" : "Sign Up" }</span>) }
+          ) : (
+            <span>{isLogin ? 'Login' : 'Sign Up'}</span>
+          )}
         </button>
       </form>
       <button
-        onClick={ () => setIsLogin(!isLogin) }
-        className='mt-4 text-light-orange hover:text-orange transition duration-300'>
-        { isLogin ? "Don't have an account? Sign up" : "Already have an account? Login" }
+        onClick={() => setIsLogin(!isLogin)}
+        className="mt-4 text-light-orange hover:text-orange transition duration-300"
+      >
+        {isLogin
+          ? "Don't have an account? Sign up"
+          : 'Already have an account? Login'}
       </button>
     </div>
-  )
+  );
 }
 
 export default AuthPage
