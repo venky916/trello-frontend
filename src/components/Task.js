@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../store/slices/taskSlice';
 import { useDrag } from 'react-dnd';
 import { formatDate } from '../utils/constants';
 import { deleteTask } from '../services/taskService';
 import { deletedTask } from '../store/slices/taskSlice';
-
+import { addToast } from '../store/slices/toastSlice';
 
 const Task = ({ task, index }) => {
   const { title, description, priority, deadline } = task;
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
+  const userLocal = JSON.parse(localStorage.getItem('user'));
+  const user = useSelector((store) => store.user.user);
+  const token = user.token || userLocal.token;
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'TASK',
@@ -21,8 +24,9 @@ const Task = ({ task, index }) => {
   }));
 
   const onDelete = async (id) => {
-    await deleteTask(id);
+    await deleteTask(id,token);
     dispatch(deletedTask(id));
+    dispatch(addToast({ message: 'Task Deleted Successfully', type: 'warning' }));
   };
 
   const handleUpdate = () => {

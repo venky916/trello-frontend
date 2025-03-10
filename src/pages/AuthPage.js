@@ -50,7 +50,6 @@ const AuthPage = () => {
       setLocalStorage(response)
       dispatch(addUser(response))
       setAuth(response); // Update auth state to trigger useEffect
-      navigate('/')
     } catch (err) {
       setError("Failed to authenticate. Please try again."); // Handle errors
     } finally {

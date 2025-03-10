@@ -6,12 +6,14 @@ import { addTasks } from '../store/slices/taskSlice';
 import TaskModal from '../components/TaskModal';
 import { useNavigate } from 'react-router-dom';
 import Fuse from 'fuse.js'; // Import Fuse.js
+import Toast from '../components/Toast';
 
 const TodoPage = () => {
   const TYPES = ['To-Do', 'In Progress', 'Under Review', 'Completed'];
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((store) => store.user);
+  const userLocal = JSON.parse(localStorage.getItem('user'));
+  const user = useSelector(store =>store.user.user)
   const allTasks = useSelector((store) => store.tasks.tasks);
   const modal = useSelector((store) => store.tasks.modalOpen);
   const [search, setSearch] = useState('');
@@ -41,7 +43,8 @@ const TodoPage = () => {
   const getTasks = async () => {
     setLoading(true);
     try {
-      const tasks = await fetchTasks();
+      const token  = user?.token || userLocal?.token
+      const tasks = await fetchTasks(token);
       dispatch(addTasks(tasks));
       setTasks(tasks); // Update local state
     } catch (error) {
@@ -52,12 +55,12 @@ const TodoPage = () => {
   };
 
   useEffect(() => {
-    if (!user.user) {
+    if (!user || !userLocal) {
       navigate('/auth');
     } else {
       getTasks(); // Fetch tasks only if the user is logged in
     }
-  }, [user.user, navigate, dispatch]); // Remove allTasks from dependencies
+  },  [navigate, dispatch]); // Remove allTasks from dependencies
 
   useEffect(() => {
     setTasks(allTasks); // Sync local tasks with Redux tasks
@@ -82,13 +85,13 @@ const TodoPage = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
-            className="bg-orange text-white px-4 py-2 rounded hover:bg-light-orange transition duration-300"
+            className="bg-orange text-white px-4 py-2 rounded-md hover:bg-light-orange hover:text-black transition duration-300"
             onClick={handleFilter}
           >
             Search
           </button>
           <button
-            className="bg-light-orange text-b-black px-4 py-2 rounded-lg hover:bg-orange transition duration-300 text-sm sm:text-base"
+            className="bg-light-orange text-b-black px-4 py-2 rounded-lg hover:bg-orange hover:text-white transition duration-300 text-sm sm:text-base"
             onClick={sortTasksByDeadline}
           >
             Sort by deadline
@@ -112,6 +115,8 @@ const TodoPage = () => {
       {modal && (
         <TaskModal className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" />
       )}
+
+      <Toast />
     </>
   );
 };

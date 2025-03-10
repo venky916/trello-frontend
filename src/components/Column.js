@@ -5,18 +5,25 @@ import { openModal, updatedTask } from '../store/slices/taskSlice';
 import { updateTask } from '../services/taskService';
 import { useDrop } from 'react-dnd';
 import Shimmer from './Shimmer';
+import { addToast } from '../store/slices/toastSlice';
 
 const Column = ({ status, colTasks, loading }) => {
   const dispatch = useDispatch();
   const [tasks, setTasks] = useState(colTasks);
+    const userLocal = JSON.parse(localStorage.getItem('user'));
+    const user = useSelector(store =>store.user.user)
 
   const [{ isOver }, drop] = useDrop({
     accept: 'TASK',
     drop: (item) => {
       if (item.task) {
         const updateData = { ...item.task, status };
-        updateTask(updateData._id, updateData).then(
+           const token = user.token || userLocal.token;
+        updateTask(updateData._id, updateData, token).then(
           dispatch(updatedTask({ id: updateData._id, data: updateData })),
+          dispatch(
+            addToast({ message: 'Task updated Successfully', type: 'success' }),
+          ),
         );
       }
     },
@@ -69,7 +76,7 @@ const Column = ({ status, colTasks, loading }) => {
 
       {/* Add Task Button */}
       <button
-        className="mt-4 bg-orange text-white py-2 px-4 rounded hover:bg-light-orange transition-colors duration-200"
+        className="mt-4 bg-orange text-white py-2 px-4 rounded hover:bg-light-orange hover:text-black transition-colors duration-200"
         onClick={addTask}
       >
         Add Task

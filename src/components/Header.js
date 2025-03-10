@@ -27,13 +27,13 @@ const Header = () => {
         user ?
           <button
             onClick={ handleLogout }
-            className='bg-orange px-4 py-2 rounded hover:bg-light-orange transition duration-300'>
+            className='bg-orange px-4 py-2 rounded hover:bg-light-orange hover:text-black transition duration-300'>
             Logout
           </button>
           :
           <button
             onClick={ () => navigate('/auth') }
-            className='bg-orange px-4 py-2 rounded hover:bg-light-orange transition duration-300'>
+            className='bg-orange px-4 py-2 rounded hover:bg-light-orange hover:text-black transition duration-300'>
             Login
           </button>
       }
